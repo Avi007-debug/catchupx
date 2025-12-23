@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { quizQuestions, Answer } from "@/data/quizData";
@@ -29,7 +28,7 @@ const QuizPage = () => {
 
   const isComplete = grade && answers.length === quizQuestions.length;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!grade) {
       toast({
         title: "Grade Required",
@@ -48,8 +47,21 @@ const QuizPage = () => {
       return;
     }
     
+    // Prepare payload for API
+    const payload = {
+      grade: grade,
+      answers: answers
+    };
+    
+    console.log("📤 Sending to API:", JSON.stringify(payload, null, 2));
+    
     // In real app, this would send to API
-    console.log({ grade, answers });
+    // const response = await fetch('/api/analyze', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(payload)
+    // });
+    
     navigate("/results");
   };
 
@@ -110,7 +122,7 @@ const QuizPage = () => {
             return (
               <div 
                 key={question.question_id} 
-                className={`gradient-border p-6 bg-card/50 backdrop-blur-sm transition-all duration-300 ${isAnswered ? 'border-primary/30' : ''}`}
+                className={`gradient-border p-6 bg-card/50 backdrop-blur-sm transition-all duration-300 relative ${isAnswered ? 'border-primary/30' : ''}`}
               >
                 <div className="flex items-start gap-3 mb-4">
                   <span className={`flex items-center justify-center w-8 h-8 rounded-lg font-heading font-bold text-sm shrink-0 ${
@@ -123,35 +135,40 @@ const QuizPage = () => {
                   </h3>
                 </div>
                 
-                <RadioGroup
-                  value={selectedAnswer?.selected_option || ""}
-                  onValueChange={(value) => handleAnswerChange(question.question_id, value)}
-                  className="space-y-3 ml-11"
-                  name={`question-${question.question_id}`}
-                >
-                  {question.options.map((option, optIndex) => (
-                    <div 
-                      key={optIndex}
-                      className={`flex items-center space-x-3 p-3 rounded-lg border transition-all duration-200 cursor-pointer ${
-                        selectedAnswer?.selected_option === option 
-                          ? 'border-primary/50 bg-primary/10' 
-                          : 'border-border/30 hover:border-border/60 hover:bg-muted/30'
-                      }`}
-                    >
-                      <RadioGroupItem 
-                        value={option} 
-                        id={`${question.question_id}-${optIndex}`}
-                        className="border-primary/50 text-primary"
-                      />
-                      <Label 
-                        htmlFor={`${question.question_id}-${optIndex}`}
-                        className="text-foreground/90 cursor-pointer flex-1"
+                <div className="space-y-3 ml-11">
+                  {question.options.map((option, optIndex) => {
+                    const optionLetter = option.charAt(0); // Extract A, B, C, D
+                    const isSelected = selectedAnswer?.selected_option === optionLetter;
+                    
+                    return (
+                      <label 
+                        key={optIndex}
+                        className={`flex items-center space-x-3 p-3 rounded-lg border transition-all duration-200 cursor-pointer relative z-10 ${
+                          isSelected 
+                            ? 'border-primary/50 bg-primary/10' 
+                            : 'border-border/30 hover:border-border/60 hover:bg-muted/30'
+                        }`}
+                        htmlFor={`${question.question_id}-${optionLetter}`}
                       >
-                        {option}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
+                        <input
+                          type="radio"
+                          id={`${question.question_id}-${optionLetter}`}
+                          name={`question-${question.question_id}`}
+                          value={optionLetter}
+                          checked={isSelected}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleAnswerChange(question.question_id, optionLetter);
+                          }}
+                          className="w-4 h-4 text-primary border-primary/50 focus:ring-primary cursor-pointer accent-primary"
+                        />
+                        <span className="text-foreground/90 flex-1 cursor-pointer select-none">
+                          {option}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}

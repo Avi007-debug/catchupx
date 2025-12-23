@@ -11,29 +11,29 @@ export interface Answer {
 
 export const quizQuestions: Question[] = [
   {
-    question_id: "q1",
+    question_id: "MATH_Q1",
     question_text: "What is the value of x in the equation 2x + 5 = 15?",
-    options: ["x = 5", "x = 10", "x = 7", "x = 3"],
+    options: ["A) x = 5", "B) x = 10", "C) x = 7", "D) x = 3"],
   },
   {
-    question_id: "q2",
+    question_id: "MATH_Q2",
     question_text: "Which of these is a prime number?",
-    options: ["21", "17", "15", "27"],
+    options: ["A) 21", "B) 17", "C) 15", "D) 27"],
   },
   {
-    question_id: "q3",
+    question_id: "MATH_Q3",
     question_text: "What is the area of a rectangle with length 8cm and width 5cm?",
-    options: ["13 cm²", "26 cm²", "40 cm²", "80 cm²"],
+    options: ["A) 13 cm²", "B) 26 cm²", "C) 40 cm²", "D) 80 cm²"],
   },
   {
-    question_id: "q4",
+    question_id: "MATH_Q4",
     question_text: "Simplify: 3² + 4²",
-    options: ["7", "12", "25", "49"],
+    options: ["A) 7", "B) 12", "C) 25", "D) 49"],
   },
   {
-    question_id: "q5",
+    question_id: "MATH_Q5",
     question_text: "What is the perimeter of a square with side 6cm?",
-    options: ["12 cm", "24 cm", "36 cm", "18 cm"],
+    options: ["A) 12 cm", "B) 24 cm", "C) 36 cm", "D) 18 cm"],
   },
 ];
 
@@ -83,36 +83,11 @@ x = 7
 };
 
 export const mockStudyPlan = {
-  study_plan: [
-    {
-      day: "Day 1",
-      topic: "Linear Equations Basics",
-      activities: "Review lesson notes, practice 10 simple equations",
-      duration: "45 minutes",
-    },
-    {
-      day: "Day 2",
-      topic: "Multi-step Equations",
-      activities: "Watch tutorial video, solve 15 practice problems",
-      duration: "60 minutes",
-    },
-    {
-      day: "Day 3",
-      topic: "Geometry - Area Formulas",
-      activities: "Memorize formulas, calculate areas for 10 shapes",
-      duration: "50 minutes",
-    },
-    {
-      day: "Day 4",
-      topic: "Geometry - Perimeter & Mixed Problems",
-      activities: "Practice worksheet, quiz yourself",
-      duration: "45 minutes",
-    },
-    {
-      day: "Day 5",
-      topic: "Review & Self-Assessment",
-      activities: "Complete practice test, review mistakes",
-      duration: "60 minutes",
-    },
-  ],
+  study_plan: {
+    "Day 1": "Math – Linear Equations",
+    "Day 2": "Science – Heat Transfer", 
+    "Day 3": "Math – Practice",
+    "Day 4": "Science – Practice",
+    "Day 5": "Revision"
+  }
 };

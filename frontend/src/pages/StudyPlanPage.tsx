@@ -32,7 +32,7 @@ const StudyPlanPage = () => {
 
         {/* Study Plan Cards */}
         <div className="space-y-4">
-          {mockStudyPlan.study_plan.map((day, index) => {
+          {Object.entries(mockStudyPlan.study_plan).map(([day, topic], index) => {
             const colors = [
               { bg: 'bg-primary/20', text: 'text-primary', border: 'border-primary/30' },
               { bg: 'bg-secondary/20', text: 'text-secondary', border: 'border-secondary/30' },
@@ -53,7 +53,7 @@ const StudyPlanPage = () => {
                     <div className="text-center">
                       <Calendar className={`w-5 h-5 mx-auto mb-1 ${color.text}`} />
                       <span className={`font-heading font-bold ${color.text}`}>
-                        {day.day}
+                        {day}
                       </span>
                     </div>
                   </div>
@@ -61,18 +61,8 @@ const StudyPlanPage = () => {
                   {/* Content */}
                   <div className="flex-1 space-y-3">
                     <h3 className="font-heading text-lg font-semibold text-foreground">
-                      {day.topic}
+                      {topic}
                     </h3>
-                    
-                    <div className="flex items-start gap-2 text-muted-foreground">
-                      <BookMarked className="w-4 h-4 mt-1 shrink-0" />
-                      <span>{day.activities}</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 text-sm">
-                      <Clock className={`w-4 h-4 ${color.text}`} />
-                      <span className={`font-medium ${color.text}`}>{day.duration}</span>
-                    </div>
                   </div>
                 </div>
               </div>
