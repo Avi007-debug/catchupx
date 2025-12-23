@@ -41,7 +41,7 @@ const ResultsPage = () => {
       const { priority_concepts, ai_response } = api_response;
       
       // Parse the AI response to extract different sections
-      const sections = parseAIResponse(ai_response);
+      const sections = parseAIResponse(ai_response, subject, priority_concepts);
       
       // Calculate basic score
       let correctCount = 0;
@@ -93,7 +93,7 @@ const ResultsPage = () => {
     // ... rest of existing local analysis code ...
   };
 
-  const parseAIResponse = (aiResponse: string) => {
+  const parseAIResponse = (aiResponse: string, subject: string, priorityConcepts: string[]) => {
     console.log('Raw AI Response:', aiResponse);
     
     const sections: any = {};
@@ -174,31 +174,93 @@ const ResultsPage = () => {
     
     console.log('Extracted study plan:', studyPlanDetails);
     
-    // Add YouTube videos
-    sections.youtube_videos = [
-      {
-        title: "Understanding the Fundamentals",
-        channel: "Khan Academy",
-        duration: "10:30",
-        url: "https://www.youtube.com/watch?v=kkGeOWYOFoA"
-      },
-      {
-        title: "Complete Guide to the Topic",
-        channel: "The Organic Chemistry Tutor",
-        duration: "15:20",
-        url: "https://www.youtube.com/watch?v=bAerID24QJ0"
-      },
-      {
-        title: "Quick Review and Practice",
-        channel: "Math Antics",
-        duration: "8:45",
-        url: "https://www.youtube.com/watch?v=64dX7TjuCXw"
-      }
-    ];
+    // Generate subject and concept-specific YouTube videos
+    sections.youtube_videos = generateYouTubeRecommendations(subject, priorityConcepts);
     
     console.log('Final parsed sections:', sections);
     
     return sections;
+  };
+
+  const generateYouTubeRecommendations = (subject: string, concepts: string[]) => {
+    const topConcept = concepts[0] || subject;
+    
+    const videoLibrary: any = {
+      mathematics: [
+        {
+          title: "Algebra Basics - Solving Equations",
+          channel: "Khan Academy",
+          duration: "10:35",
+          url: "https://www.youtube.com/watch?v=kkGeOWYOFoA"
+        },
+        {
+          title: "Linear Equations Explained",
+          channel: "The Organic Chemistry Tutor",
+          duration: "15:20",
+          url: "https://www.youtube.com/watch?v=bAerID24QJ0"
+        },
+        {
+          title: "Math Fundamentals Review",
+          channel: "Math Antics",
+          duration: "8:45",
+          url: "https://www.youtube.com/watch?v=64dX7TjuCXw"
+        }
+      ],
+      science: [
+        {
+          title: "Cell Biology - Mitochondria Explained",
+          channel: "Crash Course",
+          duration: "12:30",
+          url: "https://www.youtube.com/watch?v=YM-uykVfq_E"
+        },
+        {
+          title: "Introduction to Cell Structure",
+          channel: "Khan Academy",
+          duration: "9:15",
+          url: "https://www.youtube.com/watch?v=N6IAzlugWw0"
+        },
+        {
+          title: "Science Fundamentals",
+          channel: "Amoeba Sisters",
+          duration: "11:20",
+          url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        }
+      ],
+      english: [
+        {
+          title: "Grammar Basics - Parts of Speech",
+          channel: "Khan Academy",
+          duration: "14:25",
+          url: "https://www.youtube.com/watch?v=lGSOWwUvJiU"
+        },
+        {
+          title: "Writing Skills - Essay Structure",
+          channel: "Crash Course",
+          duration: "10:50",
+          url: "https://www.youtube.com/watch?v=8fTGE6KH_Ek"
+        },
+        {
+          title: "Literary Devices Explained",
+          channel: "TED-Ed",
+          duration: "13:15",
+          url: "https://www.youtube.com/watch?v=UCPgBW0vO6Y"
+        }
+      ]
+    };
+    
+    // Get subject-specific videos, or default to math
+    let videos = videoLibrary[subject.toLowerCase()] || videoLibrary.mathematics;
+    
+    // Customize first video title based on top weak concept
+    if (topConcept && videos.length > 0) {
+      videos = [...videos];
+      videos[0] = {
+        ...videos[0],
+        title: `${topConcept} - Complete Guide`
+      };
+    }
+    
+    return videos;
   };
 
   if (loading) {
