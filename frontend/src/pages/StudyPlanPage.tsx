@@ -32,7 +32,7 @@ const StudyPlanPage = () => {
 
         {/* Study Plan Cards */}
         <div className="space-y-4">
-          {Object.entries(mockStudyPlan.study_plan).map(([day, topic], index) => {
+          {Object.entries(mockStudyPlan.study_plan).map(([day, details], index) => {
             const colors = [
               { bg: 'bg-primary/20', text: 'text-primary', border: 'border-primary/30' },
               { bg: 'bg-secondary/20', text: 'text-secondary', border: 'border-secondary/30' },
@@ -41,6 +41,9 @@ const StudyPlanPage = () => {
               { bg: 'bg-secondary/20', text: 'text-secondary', border: 'border-secondary/30' },
             ];
             const color = colors[index];
+            
+            // Parse the detailed study plan
+            const [topic, description] = details.split(' - ');
             
             return (
               <div 
@@ -63,6 +66,58 @@ const StudyPlanPage = () => {
                     <h3 className="font-heading text-lg font-semibold text-foreground">
                       {topic}
                     </h3>
+                    
+                    <div className="flex items-start gap-2 text-muted-foreground">
+                      <BookMarked className="w-4 h-4 mt-1 shrink-0" />
+                      <span>{description}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-sm">
+                      <Clock className={`w-4 h-4 ${color.text}`} />
+                      <span className={`font-medium ${color.text}`}>45-60 minutes</span>
+                    </div>
+
+                    {/* Study activities */}
+                    <div className="mt-4 p-3 rounded-lg bg-muted/20 border border-border/20">
+                      <h4 className="font-medium text-foreground mb-2">Recommended Activities:</h4>
+                      <ul className="text-sm text-muted-foreground space-y-1">
+                        {index === 0 && (
+                          <>
+                            <li>• Review basic equation solving steps</li>
+                            <li>• Practice 10-15 simple linear equations</li>
+                            <li>• Watch Khan Academy video on linear equations</li>
+                          </>
+                        )}
+                        {index === 1 && (
+                          <>
+                            <li>• Solve equations with variables on both sides</li>
+                            <li>• Work through 5-8 word problems</li>
+                            <li>• Complete practice worksheet</li>
+                          </>
+                        )}
+                        {index === 2 && (
+                          <>
+                            <li>• Memorize area formulas for basic shapes</li>
+                            <li>• Calculate areas for 10 different problems</li>
+                            <li>• Create formula reference sheet</li>
+                          </>
+                        )}
+                        {index === 3 && (
+                          <>
+                            <li>• Learn prime vs composite number definitions</li>
+                            <li>• Practice identifying prime numbers 1-100</li>
+                            <li>• Complete prime factorization exercises</li>
+                          </>
+                        )}
+                        {index === 4 && (
+                          <>
+                            <li>• Take practice quiz covering all concepts</li>
+                            <li>• Review incorrect answers from original quiz</li>
+                            <li>• Self-assess progress and identify remaining gaps</li>
+                          </>
+                        )}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>

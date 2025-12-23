@@ -1,14 +1,54 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Zap, Target, LogIn } from "lucide-react";
+import { Sparkles, Zap, Target, LogIn, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { user, signOut, loading } = useAuth();
+
+  const handleStartQuiz = () => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      navigate("/setup");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      {/* Login/User Button - Top Right */}
+      <div className="fixed top-4 right-4 z-50">
+        {loading ? (
+          <div className="w-10 h-10 rounded-full bg-muted animate-pulse" />
+        ) : user ? (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground hidden sm:block">
+              {user.user_metadata?.full_name || user.email}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={signOut}
+              className="bg-card/80 backdrop-blur-sm border-border/50 hover:bg-card/90 gap-2"
+            >
+              <User className="w-4 h-4" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </Button>
+          </div>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/login")}
+            className="bg-card/80 backdrop-blur-sm border-border/50 hover:bg-card/90 gap-2"
+          >
+            <LogIn className="w-4 h-4" />
+            <span className="hidden sm:inline">Login</span>
+          </Button>
+        )}
+      </div>
+
       {/* Background effects */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(180_100%_50%_/_0.1)_0%,_transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_hsl(320_100%_60%_/_0.1)_0%,_transparent_50%)]" />
@@ -64,23 +104,20 @@ const HomePage = () => {
         <div className="pt-6 space-y-4">
           <Button 
             size="lg" 
-            onClick={login}
+            onClick={handleStartQuiz}
             className="text-lg px-12 animate-pulse-glow gap-2 w-full md:w-auto"
           >
-            <LogIn className="w-5 h-5" />
-            Login
+            <Zap className="w-5 h-5" />
+            {user ? "Start Diagnostic Quiz" : "Login to Start Quiz"}
           </Button>
           
-          <div className="text-center">
-            <Button 
-              variant="outline"
-              size="lg" 
-              onClick={() => navigate("/quiz")}
-              className="text-lg px-12"
-            >
-              Start Diagnostic Quiz
-            </Button>
-          </div>
+          {!user && (
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                Please login to access personalized learning features
+              </p>
+            </div>
+          )}
         </div>
         
         {/* Grade info */}

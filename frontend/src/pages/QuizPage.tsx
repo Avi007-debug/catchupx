@@ -1,18 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { quizQuestions, Answer } from "@/data/quizData";
+import { generateQuizQuestions, Answer, Question } from "@/data/quizData";
 import { ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
 import LoginIndicator from "@/components/LoginIndicator";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const QuizPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [grade, setGrade] = useState<string>("");
+  const [subject, setSubject] = useState<string>("");
+  const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check authentication
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    // Get grade and subject from localStorage (set in SetupPage)
+    const savedGrade = localStorage.getItem('quiz_grade');
+    const savedSubject = localStorage.getItem('quiz_subject');
+
+    if (!savedGrade || !savedSubject) {
+      navigate("/setup");
+      return;
+    }
+
+    setGrade(savedGrade);
+    setSubject(savedSubject);
+
+    // Generate questions based on grade and subject
+    const questions = generateQuizQuestions(savedGrade, savedSubject);
+    setQuizQuestions(questions);
+    setLoading(false);
+  }, [user, navigate]);
 
   const handleAnswerChange = (questionId: string, selectedOption: string) => {
     setAnswers(prev => {
@@ -29,15 +58,6 @@ const QuizPage = () => {
   const isComplete = grade && answers.length === quizQuestions.length;
 
   const handleSubmit = async () => {
-    if (!grade) {
-      toast({
-        title: "Grade Required",
-        description: "Please select your grade before submitting the quiz.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     if (answers.length !== quizQuestions.length) {
       toast({
         title: "Incomplete Quiz",
@@ -50,20 +70,42 @@ const QuizPage = () => {
     // Prepare payload for API
     const payload = {
       grade: grade,
+      subject: subject,
       answers: answers
     };
     
     console.log("📤 Sending to API:", JSON.stringify(payload, null, 2));
     
-    // In real app, this would send to API
-    // const response = await fetch('/api/analyze', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload)
-    // });
+    // Store results for the results page
+    localStorage.setItem('quiz_results', JSON.stringify(payload));
     
     navigate("/results");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading quiz questions...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (quizQuestions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">No questions available for this grade and subject.</p>
+          <Button onClick={() => navigate("/setup")} className="mt-4">
+            Go Back to Setup
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background py-8 px-4 relative overflow-hidden">
@@ -75,42 +117,26 @@ const QuizPage = () => {
       <div className="max-w-3xl mx-auto relative z-10">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/setup")}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
             <h1 className="font-heading text-3xl font-bold text-foreground">
-              Diagnostic Quiz
+              {subject.charAt(0).toUpperCase() + subject.slice(1)} Quiz - Grade {grade}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Answer the questions to identify your learning gaps
+              Answer all questions to identify your learning gaps
             </p>
           </div>
         </div>
 
-        {/* Grade Selection */}
-        <div className="gradient-border p-6 bg-card/50 backdrop-blur-sm mb-6">
-          <Label htmlFor="grade" className="text-lg font-heading text-foreground mb-3 block">
-            Select Grade *
-          </Label>
-          <Select value={grade} onValueChange={setGrade}>
-            <SelectTrigger className={`w-full md:w-64 bg-input border-border/50 text-foreground ${!grade ? 'border-red-300' : ''}`}>
-              <SelectValue placeholder="Choose your grade" />
-            </SelectTrigger>
-            <SelectContent className="bg-card border-border">
-              {[6, 7, 8, 9, 10].map(g => (
-                <SelectItem key={g} value={g.toString()} className="text-foreground hover:bg-muted">
-                  Grade {g}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {!grade && (
-            <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
-              <AlertCircle className="w-4 h-4" />
-              <span>Grade selection is required</span>
-            </div>
-          )}
+        {/* Quiz Info */}
+        <div className="gradient-border p-4 bg-card/50 backdrop-blur-sm mb-6">
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span>Subject: <span className="font-medium text-foreground">{subject.charAt(0).toUpperCase() + subject.slice(1)}</span></span>
+            <span>Grade: <span className="font-medium text-foreground">{grade}</span></span>
+            <span>Questions: <span className="font-medium text-foreground">{quizQuestions.length}</span></span>
+          </div>
         </div>
 
         {/* Questions */}
