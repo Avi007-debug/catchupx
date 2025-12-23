@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { mockLesson } from "@/data/quizData";
-import { ArrowLeft, BookOpen, Lightbulb, PenTool } from "lucide-react";
+import { ArrowLeft, BookOpen, Lightbulb, PenTool, Youtube } from "lucide-react";
 import LoginIndicator from "@/components/LoginIndicator";
 
 const LessonPage = () => {
@@ -63,6 +63,42 @@ const LessonPage = () => {
             {parseText(mockLesson.lesson_explanation)}
           </div>
         </div>
+
+        {/* YouTube Recommendations */}
+        {mockLesson.youtube_videos && mockLesson.youtube_videos.length > 0 && (
+          <div className="gradient-border p-6 md:p-8 bg-card/50 backdrop-blur-sm mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 rounded-lg bg-red-500/20">
+                <Youtube className="w-5 h-5 text-red-500" />
+              </div>
+              <h2 className="font-heading text-xl font-semibold text-foreground">
+                Recommended Videos
+              </h2>
+            </div>
+            <div className="space-y-3">
+              {mockLesson.youtube_videos.map((video, index) => (
+                <a
+                  key={index}
+                  href={video.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-4 p-4 rounded-lg bg-muted/30 border border-border/30 hover:border-red-500/50 hover:bg-red-500/5 transition-all duration-200 group"
+                >
+                  <div className="p-2 rounded-lg bg-red-500/20 group-hover:bg-red-500/30 transition-colors">
+                    <Youtube className="w-6 h-6 text-red-500" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-foreground group-hover:text-red-500 transition-colors mb-1">
+                      {video.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">{video.channel}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{video.duration}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Worked Example */}
         <div className="gradient-border p-6 md:p-8 bg-card/50 backdrop-blur-sm mb-6">

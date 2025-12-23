@@ -21,10 +21,6 @@ const SetupPage = () => {
     { value: "mathematics", label: "Mathematics" },
     { value: "science", label: "Science" },
     { value: "english", label: "English" },
-    { value: "social_studies", label: "Social Studies" },
-    { value: "physics", label: "Physics" },
-    { value: "chemistry", label: "Chemistry" },
-    { value: "biology", label: "Biology" },
   ];
 
   const handleStartQuiz = () => {

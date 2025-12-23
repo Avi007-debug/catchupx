@@ -57,12 +57,10 @@ const HomePage = () => {
       <div className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-20 right-20 w-40 h-40 bg-secondary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
       
-      <main className="relative z-10 max-w-2xl mx-auto text-center space-y-8">
+      <main className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
         {/* Logo/Brand */}
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="p-3 rounded-xl bg-primary/10 border border-primary/30">
-            <Zap className="w-8 h-8 text-primary" />
-          </div>
+          <img src="/image.png" alt="CatchUpX" className="w-16 h-16" />
         </div>
         
         {/* Title */}
@@ -76,27 +74,42 @@ const HomePage = () => {
           Learn What You Missed
         </p>
         
-        {/* Description Card */}
-        <div className="gradient-border p-6 md:p-8 bg-card/50 backdrop-blur-sm">
-          <p className="text-lg md:text-xl text-foreground/90 leading-relaxed">
-            CatchUpX helps you identify learning gaps and creates a{" "}
-            <span className="text-primary font-semibold">personalized catch-up plan</span> using AI.
-          </p>
-        </div>
-        
-        {/* Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-          <div className="flex items-center gap-3 p-4 rounded-lg bg-card/30 border border-border/50">
-            <Target className="w-5 h-5 text-primary shrink-0" />
-            <span className="text-sm text-muted-foreground">Identify Gaps</span>
+        {/* Description Cards - 3 Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+          <div className="gradient-border p-6 bg-card/50 backdrop-blur-sm">
+            <div className="flex justify-center mb-4">
+              <Target className="w-10 h-10 text-primary" />
+            </div>
+            <h3 className="font-heading text-lg font-semibold text-foreground mb-3">
+              Identify Learning Gaps
+            </h3>
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              Take our diagnostic quiz to pinpoint exactly where you need help. Our AI analyzes your answers to identify specific concepts you're struggling with.
+            </p>
           </div>
-          <div className="flex items-center gap-3 p-4 rounded-lg bg-card/30 border border-border/50">
-            <Sparkles className="w-5 h-5 text-secondary shrink-0" />
-            <span className="text-sm text-muted-foreground">AI-Powered</span>
+          
+          <div className="gradient-border p-6 bg-card/50 backdrop-blur-sm">
+            <div className="flex justify-center mb-4">
+              <Sparkles className="w-10 h-10 text-secondary" />
+            </div>
+            <h3 className="font-heading text-lg font-semibold text-foreground mb-3">
+              AI-Powered Lessons
+            </h3>
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              Get personalized lessons tailored to your unique learning needs. Our AI creates custom explanations, examples, and practice problems just for you.
+            </p>
           </div>
-          <div className="flex items-center gap-3 p-4 rounded-lg bg-card/30 border border-border/50">
-            <Zap className="w-5 h-5 text-accent shrink-0" />
-            <span className="text-sm text-muted-foreground">Custom Plan</span>
+          
+          <div className="gradient-border p-6 bg-card/50 backdrop-blur-sm">
+            <div className="flex justify-center mb-4">
+              <Zap className="w-10 h-10 text-accent" />
+            </div>
+            <h3 className="font-heading text-lg font-semibold text-foreground mb-3">
+              Custom Study Plan
+            </h3>
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              Receive a structured 2-week study plan designed to help you catch up quickly and efficiently. Track your progress and achieve your learning goals.
+            </p>
           </div>
         </div>
         

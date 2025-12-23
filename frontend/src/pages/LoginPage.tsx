@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Zap } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -110,9 +110,7 @@ const LoginPage = () => {
       <div className="relative z-10 w-full max-w-md">
         {/* Logo/Brand */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="p-3 rounded-xl bg-primary/10 border border-primary/30">
-            <Zap className="w-8 h-8 text-primary" />
-          </div>
+          <img src="/image.png" alt="CatchUpX" className="w-16 h-16" />
           <div className="text-center">
             <h1 className="font-heading text-3xl font-bold text-foreground tracking-tight">
               <span className="text-primary">Catch</span>
