@@ -5,10 +5,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { quizQuestions, Answer } from "@/data/quizData";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import LoginIndicator from "@/components/LoginIndicator";
+import { useToast } from "@/hooks/use-toast";
 
 const QuizPage = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [grade, setGrade] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
 
@@ -27,15 +30,32 @@ const QuizPage = () => {
   const isComplete = grade && answers.length === quizQuestions.length;
 
   const handleSubmit = () => {
-    if (isComplete) {
-      // In real app, this would send to API
-      console.log({ grade, answers });
-      navigate("/results");
+    if (!grade) {
+      toast({
+        title: "Grade Required",
+        description: "Please select your grade before submitting the quiz.",
+        variant: "destructive",
+      });
+      return;
     }
+    
+    if (answers.length !== quizQuestions.length) {
+      toast({
+        title: "Incomplete Quiz",
+        description: "Please answer all questions before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // In real app, this would send to API
+    console.log({ grade, answers });
+    navigate("/results");
   };
 
   return (
     <div className="min-h-screen bg-background py-8 px-4 relative overflow-hidden">
+      <LoginIndicator />
       {/* Background effects */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_hsl(180_100%_50%_/_0.08)_0%,_transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_hsl(320_100%_60%_/_0.08)_0%,_transparent_50%)]" />
@@ -59,10 +79,10 @@ const QuizPage = () => {
         {/* Grade Selection */}
         <div className="gradient-border p-6 bg-card/50 backdrop-blur-sm mb-6">
           <Label htmlFor="grade" className="text-lg font-heading text-foreground mb-3 block">
-            Select Grade
+            Select Grade *
           </Label>
           <Select value={grade} onValueChange={setGrade}>
-            <SelectTrigger className="w-full md:w-64 bg-input border-border/50 text-foreground">
+            <SelectTrigger className={`w-full md:w-64 bg-input border-border/50 text-foreground ${!grade ? 'border-red-300' : ''}`}>
               <SelectValue placeholder="Choose your grade" />
             </SelectTrigger>
             <SelectContent className="bg-card border-border">
@@ -73,6 +93,12 @@ const QuizPage = () => {
               ))}
             </SelectContent>
           </Select>
+          {!grade && (
+            <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
+              <AlertCircle className="w-4 h-4" />
+              <span>Grade selection is required</span>
+            </div>
+          )}
         </div>
 
         {/* Questions */}
@@ -101,6 +127,7 @@ const QuizPage = () => {
                   value={selectedAnswer?.selected_option || ""}
                   onValueChange={(value) => handleAnswerChange(question.question_id, value)}
                   className="space-y-3 ml-11"
+                  name={`question-${question.question_id}`}
                 >
                   {question.options.map((option, optIndex) => (
                     <div 
@@ -135,7 +162,6 @@ const QuizPage = () => {
           <Button 
             size="lg" 
             onClick={handleSubmit}
-            disabled={!isComplete}
             className="px-12"
           >
             Submit Quiz

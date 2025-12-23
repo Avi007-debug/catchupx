@@ -2,12 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { mockResults } from "@/data/quizData";
 import { ArrowLeft, AlertTriangle, Target } from "lucide-react";
+import LoginIndicator from "@/components/LoginIndicator";
 
 const ResultsPage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background py-8 px-4 relative overflow-hidden">
+      <LoginIndicator />
       {/* Background effects */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(320_100%_60%_/_0.08)_0%,_transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_hsl(180_100%_50%_/_0.08)_0%,_transparent_50%)]" />

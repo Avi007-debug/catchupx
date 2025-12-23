@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Zap, Target } from "lucide-react";
+import { Sparkles, Zap, Target, LogIn } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
@@ -58,15 +60,27 @@ const HomePage = () => {
           </div>
         </div>
         
-        {/* CTA Button */}
-        <div className="pt-6">
+        {/* CTA Buttons */}
+        <div className="pt-6 space-y-4">
           <Button 
             size="lg" 
-            onClick={() => navigate("/quiz")}
-            className="text-lg px-12 animate-pulse-glow"
+            onClick={login}
+            className="text-lg px-12 animate-pulse-glow gap-2 w-full md:w-auto"
           >
-            Start Diagnostic Quiz
+            <LogIn className="w-5 h-5" />
+            Login
           </Button>
+          
+          <div className="text-center">
+            <Button 
+              variant="outline"
+              size="lg" 
+              onClick={() => navigate("/quiz")}
+              className="text-lg px-12"
+            >
+              Start Diagnostic Quiz
+            </Button>
+          </div>
         </div>
         
         {/* Grade info */}
