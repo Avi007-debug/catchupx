@@ -76,10 +76,38 @@ const QuizPage = () => {
     
     console.log("📤 Sending to API:", JSON.stringify(payload, null, 2));
     
-    // Store results for the results page
-    localStorage.setItem('quiz_results', JSON.stringify(payload));
-    
-    navigate("/results");
+    try {
+      // Call the real Lambda API
+      const response = await fetch('https://jnmw6jyz8f.execute-api.us-east-1.amazonaws.com/prod/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const results = await response.json();
+      console.log("📥 Received from API:", results);
+      
+      // Store results for the results page
+      localStorage.setItem('quiz_results', JSON.stringify({
+        ...payload,
+        api_response: results
+      }));
+      
+      navigate("/results");
+    } catch (error) {
+      console.error("API Error:", error);
+      toast({
+        title: "Analysis Failed",
+        description: "Unable to analyze your quiz results. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {

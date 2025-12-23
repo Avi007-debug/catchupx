@@ -1,11 +1,33 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { mockStudyPlan } from "@/data/quizData";
 import { ArrowLeft, Calendar, Clock, BookMarked, RotateCcw } from "lucide-react";
 import LoginIndicator from "@/components/LoginIndicator";
+import { useEffect, useState } from "react";
 
 const StudyPlanPage = () => {
   const navigate = useNavigate();
+  const [studyPlanData, setStudyPlanData] = useState<any>(null);
+  
+  useEffect(() => {
+    const savedData = localStorage.getItem('lesson_data');
+    if (!savedData) {
+      navigate('/setup');
+      return;
+    }
+    const data = JSON.parse(savedData);
+    setStudyPlanData(data.studyPlanDetails || {});
+  }, [navigate]);
+  
+  if (!studyPlanData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading study plan...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background py-8 px-4 relative overflow-hidden">
@@ -32,7 +54,7 @@ const StudyPlanPage = () => {
 
         {/* Study Plan Cards */}
         <div className="space-y-4">
-          {Object.entries(mockStudyPlan.study_plan).map(([day, details], index) => {
+          {Object.entries(studyPlanData).map(([day, details]: [string, any], index: number) => {
             const colors = [
               { bg: 'bg-primary/20', text: 'text-primary', border: 'border-primary/30' },
               { bg: 'bg-secondary/20', text: 'text-secondary', border: 'border-secondary/30' },

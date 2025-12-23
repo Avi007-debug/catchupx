@@ -135,7 +135,7 @@ const HomePage = () => {
         
         {/* Grade info */}
         <p className="text-sm text-muted-foreground/70 pt-4">
-          For students in Grades 6–10
+          For students in Grades 6–12
         </p>
       </main>
     </div>

@@ -1,11 +1,38 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { mockLesson } from "@/data/quizData";
 import { ArrowLeft, BookOpen, Lightbulb, PenTool, Youtube } from "lucide-react";
 import LoginIndicator from "@/components/LoginIndicator";
+import { useEffect, useState } from "react";
 
 const LessonPage = () => {
   const navigate = useNavigate();
+  const [lessonData, setLessonData] = useState<any>(null);
+  
+  useEffect(() => {
+    const savedData = localStorage.getItem('lesson_data');
+    console.log('Saved lesson data from localStorage:', savedData);
+    if (!savedData) {
+      navigate('/setup');
+      return;
+    }
+    const parsedData = JSON.parse(savedData);
+    console.log('Parsed lesson data:', parsedData);
+    console.log('Lesson explanation:', parsedData.lessonExplanation);
+    console.log('Worked example:', parsedData.workedExample);
+    console.log('Practice questions:', parsedData.practiceQuestions);
+    setLessonData(parsedData);
+  }, [navigate]);
+  
+  if (!lessonData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading lesson...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Simple markdown-like parsing for bold text
   const parseText = (text: string) => {
@@ -60,12 +87,12 @@ const LessonPage = () => {
             </h2>
           </div>
           <div className="text-foreground/85 leading-relaxed">
-            {parseText(mockLesson.lesson_explanation)}
+            {parseText(lessonData.lessonExplanation || lessonData.lessonContent || 'No lesson content available.')}
           </div>
         </div>
 
         {/* YouTube Recommendations */}
-        {mockLesson.youtube_videos && mockLesson.youtube_videos.length > 0 && (
+        {lessonData.youtubeVideos && lessonData.youtubeVideos.length > 0 && (
           <div className="gradient-border p-6 md:p-8 bg-card/50 backdrop-blur-sm mb-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-lg bg-red-500/20">
@@ -76,7 +103,7 @@ const LessonPage = () => {
               </h2>
             </div>
             <div className="space-y-3">
-              {mockLesson.youtube_videos.map((video, index) => (
+              {lessonData.youtubeVideos.map((video: any, index: number) => (
                 <a
                   key={index}
                   href={video.url}
@@ -111,7 +138,7 @@ const LessonPage = () => {
             </h2>
           </div>
           <div className="text-foreground/85 leading-relaxed font-mono text-sm bg-muted/30 p-4 rounded-lg border border-border/30">
-            {parseText(mockLesson.worked_example)}
+            {parseText(lessonData.workedExample || 'No worked example available.')}
           </div>
         </div>
 
@@ -126,7 +153,7 @@ const LessonPage = () => {
             </h2>
           </div>
           <ul className="space-y-3">
-            {mockLesson.practice_questions.map((question, index) => (
+            {(lessonData.practiceQuestions || []).map((question: string, index: number) => (
               <li 
                 key={index}
                 className="flex items-start gap-3 p-4 rounded-lg bg-muted/30 border border-border/30"
